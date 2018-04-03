@@ -1,5 +1,5 @@
 var CommonFunctions = require("./common-functions");
-var SoatToken = artifacts.require("./SoatToken.sol");
+var SoatToken = require("./SoatToken.sol");
 
 module.exports = function (callback) {
     var _instance = null;
