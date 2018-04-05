@@ -37,6 +37,7 @@ contract SoatToken {
      * @dev Fallback function
      */
     function() public payable { revert(); }
+    
     /**
      * Gets the token balance of any wallet.
      * @param _owner Wallet address of the returned token balance.

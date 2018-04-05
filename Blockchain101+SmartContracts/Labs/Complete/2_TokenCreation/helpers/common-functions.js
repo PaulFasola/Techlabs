@@ -1,17 +1,35 @@
- exports.getBalances = async (instance, web3) => {
-     var balances = [];
-     web3.eth.accounts.forEach(async (account) => {
-         var balance = await instance.balanceOf(account);
-         balances.push({
-             account: account,
-             balance: balance
-         });
-     });
-     
-     console.log(balances);
-     return balances;
- }
+var contractHelper = {
 
- exports.getBalance = async (instance, address) => {
-     return await instance.balanceOf(address);
- }
+    instance: {},
+    web3: {},
+
+    bind: (contractInstance, web3Hook) => {
+        contractHelper.instance = contractInstance;
+        contractHelper.web3 = web3Hook;
+    },
+
+    getBalances: async () => {
+        var balances = [];
+
+        await Promise.all(
+            contractHelper.web3.eth.accounts.map(
+                (account, i) => {
+                    return contractHelper.instance.balanceOf(account).then((balance) => {
+                        balances.push({
+                            account: account,
+                            balance: balance
+                        });
+                    })
+
+                })
+        );
+
+        return balances;
+    },
+
+    getBalance: (instance, address) => {
+        return instance.balanceOf(address);
+    }
+}
+
+module.exports = contractHelper;
