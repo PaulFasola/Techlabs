@@ -7,9 +7,11 @@ module.exports = (callback) => {
             helper.bind(contractInstance, web3);
 
             var balances = await helper.getBalances(); 
-            console.log(SoatToken.contractName + " balance summary");
-            console.log("               Account                      |  Balance                 ");
-            balances.forEach((balance) => console.log(`${balance.account}     ${web3.fromWei(balance.balance) }`))
+            console.log(SoatToken.contractName + " balance summary\n");
+            console.log("***********************************************************************");
+            console.log("  Account                                        Balance                 ");
+            console.log("***********************************************************************");
+            balances.forEach((balance) => console.log(`  ${balance.account}     ${web3.fromWei(balance.balance) }`))
         })  
         .catch((msg) => console.log("Error : " + msg));
 

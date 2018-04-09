@@ -11,6 +11,10 @@ var contractHelper = {
     getBalances: async () => {
         var balances = [];
 
+        if(contractHelper.web3.eth === undefined){
+            return balances;
+        }
+
         await Promise.all(
             contractHelper.web3.eth.accounts.map(
                 (account, i) => {
