@@ -1,82 +1,93 @@
 const util = require('util');
+const rlsync = require('readline-sync');
 const exec = util.promisify(require('child_process').exec);
-
-var readline = require('readline');
-
-var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 
 const scripts = [{
         label: "Read account balances",
         file: "read-balances.js"
     },
     {
-        label: "Send any amount of tokens from the owner account to the next one",
+        label: "Send any amount of tokens from the owner account to the nearest one",
         file: "send-tokens-from-owner.js",
-		prerequisites: ["askForAmmount"] 
-    }, 
+        prerequisites: ["askForAmmount"]
+    },
     {
         label: "Send any amount of tokens from an account to another",
-        file: "send-tokens-custom.js", 
-		prerequisites: ["askForSender", "askForReceiver", "askForAmmount"] 
+        file: "send-tokens-custom.js",
+        prerequisites: ["askForSender", "askForReceiver", "askForAmmount"]
     },
 ];
 
-getParamsFromPrerequisites = async (prerequisites) => { 
-	if(prerequisites == null){
-		return "";
-	}
-	
-	prerequisites.forEach((prerequisite) => {
-		if( prerequisite == "askForAmmount" ){
-			
-		} else if( prerequisite == "askForSender" ){
-			
-		} else if( prerequisite == "askForReceiver" ){
-			
-		} else{
-			throw "Prerequisite '" + prerequisite + "' is not implemented.";
-		}
-		
-		return "ok";
-	});
-};
+getParamsFromPrerequisites = (prerequisites) => {
+    var inlineParams = " ";
 
-ask = async () => { 
-	var childProcessParameters = "";
-	console.log("Techlab Helpers\n==============");
-	scripts.map((o, i) => console.log(i + " -> " + o.label));
+    if (prerequisites == null) {
+        return "";
+    }
 
-    rl.question("\nChoice ? (q to quit)> ", async (answer) => {
-        if (answer !== "q") {
-            if (parseInt(answer) === NaN || scripts[answer] == null) {
-                console.log("Please enter a valid number");
+    prerequisites.forEach((prerequisite) => {
+        if (prerequisite == "askForAmmount") {
+            var answer = rlsync.question("\nAmount of tokens to send ? (1 by default)> ");
+            if (parseInt(answer) !== NaN || answer.length === 0) {
+                inlineParams += "--amount " + ((answer.length === 0) ? 1 : answer);
             } else {
-				console.log("Running truffle exec on ./helper/" + scripts[answer].file)
-				
-				if(scripts[answer].prerequisites != null){
-					// Since readline is ineffective when run from a sub process, 
-					// let's get the infos here.
-					childProcessParameters = await getParamsFromPrerequisites(scripts[answer].prerequisites);
-					console.log(" -> with the following params : " + childProcessParameters);
-				}
-				
-                const {
-                    stdout,
-                    stderr
-                } = await exec('truffle exec ./helpers/' + scripts[answer].file + childProcessParameters);
-				
-                console.log('stdout:', stdout);
-                
-                if(stderr.length !== 0){
-                    console.log(stderr);
-                }
+                console.log("Invalid : the provided amount is not a number.");
             }
-            ask();
+        } else if (prerequisite == "askForSender") {
+            var answer = rlsync.question("\nSender wallet address ?> ");
+            if (answer.length === 40 || answer.length == 42) { // 42 : with 0x
+                inlineParams += "--sender " + answer;
+            } else {
+                console.log("Invalid : wallet address are 40 or 42 length sized.");
+            }
+        } else if (prerequisite == "askForReceiver") {
+            var answer = rlsync.question("\nReceiver wallet address ?> ");
+            if (answer.length === 40 || answer.length == 42) { // 42 : with 0x
+                inlineParams += "--receiver " + answer;
+            } else {
+                console.log("Invalid : wallet address are 40 or 42 length sized.");
+            }
+        } else {
+            throw "Prerequisite '" + prerequisite + "' is not implemented.";
         }
     });
+
+    return inlineParams;
+};
+
+ask = async () => {
+    var childProcessParameters = "";
+    console.log("Techlab Helpers\n==============");
+    scripts.map((o, i) => console.log(i + " -> " + o.label));
+
+    var answer = rlsync.question("\nChoice ? (q to quit)> ");
+
+    if (answer !== "q") {
+        if (parseInt(answer) === NaN || scripts[answer] == null) {
+            console.log("Please enter a valid number");
+        } else {
+            if (scripts[answer].prerequisites != null) {
+                // Since readline is ineffective when run from a sub process, 
+                // let's get the infos here.
+                childProcessParameters = getParamsFromPrerequisites(scripts[answer].prerequisites);
+                console.log(`\nRunning truffle exec on ./helper/" ${scripts[answer].file} with the following params :${childProcessParameters}`)
+            } else {
+                console.log("Running truffle exec on ./helper/" + scripts[answer].file)
+            }
+
+            const {
+                stdout,
+                stderr
+            } = await exec('truffle exec ./helpers/' + scripts[answer].file + childProcessParameters);
+
+            console.log('stdout:', stdout);
+
+            if (stderr.length !== 0) {
+                console.log(stderr);
+            }
+        }
+        ask();
+    }
 };
 
 console.log('\x1Bc'); // console clear
