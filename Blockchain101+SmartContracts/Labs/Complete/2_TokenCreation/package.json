@@ -10,6 +10,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "commander": "^2.15.1",
+    "readline-sync": "^1.4.9",
     "zeppelin-solidity": "^1.8.0"
   }
 }

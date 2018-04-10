@@ -29,7 +29,7 @@ contract SoatToken {
         symbol = 'STK';
         name = 'SoatToken';
         decimals = 18;
-        totalSupply = 1337 * 10**uint(decimals);
+        totalSupply = 13370000 * 10** uint(decimals);
         balances[msg.sender] = totalSupply;
         Transfer(address(0), msg.sender, totalSupply);
     }
