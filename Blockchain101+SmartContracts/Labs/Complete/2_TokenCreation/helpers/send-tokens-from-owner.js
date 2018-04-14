@@ -1,21 +1,32 @@
-var SoatToken = artifacts.require("./SoatToken.sol");
-var readline = require('readline');
- 
-module.exports = function (callback) {
-    var _instance = null;
-    var errored = false;
+'use strict';
 
-process.argv.forEach(function (val, index, array) {
-  console.log(index + ': ' + val);
-});
+const SoatToken = artifacts.require("./SoatToken.sol");
+const readline = require('readline');
+const program = require("commander");
+
+module.exports = function (callback) {
+    let _instance = null;
+    let errored = false; 
+
+    program
+        .option('--amount [value]', 'Amount of tokens')
+        .parse(process.argv);
+  
+    if(parseInt(program.amount) === NaN){
+        return;
+    }
+
+    let tokenAmount = program.amount * 1000000000000000000;
+
     SoatToken.deployed()
         .then(
             async function (instance) {
                 _instance = instance;
                 console.log("*****************************************************************************************************************")
                 console.log(" Sending FROM: " + web3.eth.accounts[0] + "    ->     TO: " + web3.eth.accounts[1])
+                console.log(" Amount : " + web3.fromWei(tokenAmount, "ether")); // 18 digits
                 console.log("*****************************************************************************************************************\n")
-                return instance.transfer(web3.eth.accounts[1], 1000000000000000000);
+                return instance.transfer(web3.eth.accounts[1], tokenAmount);
             },
             async function (error) {
                 errored = true;
@@ -24,13 +35,13 @@ process.argv.forEach(function (val, index, array) {
         )
         .then(
             async (result) => {
-                if(result.tx !== undefined){ 
+                if (result.tx !== undefined) {
                     console.log(" == Transaction Succeeded !");
                     console.log(` == Tx is : ${ result.tx } \n\n`);
-                } else{
+                } else {
                     console.log("Transaction may have failed ...\n\n");
                 }
-                
+
                 console.log("Transaction details : \n**************************************************************************************************\n")
                 console.log(result);
             },

@@ -29,21 +29,21 @@ getParamsFromPrerequisites = (prerequisites) => {
         if (prerequisite == "askForAmmount") {
             var answer = rlsync.question("\nAmount of tokens to send ? (1 by default)> ");
             if (parseInt(answer) !== NaN || answer.length === 0) {
-                inlineParams += "--amount " + ((answer.length === 0) ? 1 : answer);
+                inlineParams += " --amount " + ((answer.length === 0) ? 1 : answer);
             } else {
                 console.log("Invalid : the provided amount is not a number.");
             }
         } else if (prerequisite == "askForSender") {
             var answer = rlsync.question("\nSender wallet address ?> ");
             if (answer.length === 40 || answer.length == 42) { // 42 : with 0x
-                inlineParams += "--sender " + answer;
+                inlineParams += " --sender " + answer;
             } else {
                 console.log("Invalid : wallet address are 40 or 42 length sized.");
             }
         } else if (prerequisite == "askForReceiver") {
             var answer = rlsync.question("\nReceiver wallet address ?> ");
             if (answer.length === 40 || answer.length == 42) { // 42 : with 0x
-                inlineParams += "--receiver " + answer;
+                inlineParams += " --receiver " + answer;
             } else {
                 console.log("Invalid : wallet address are 40 or 42 length sized.");
             }

@@ -1,5 +1,6 @@
-var contractHelper = {
+'use strict';
 
+var contractHelper = {
     instance: {},
     web3: {},
 

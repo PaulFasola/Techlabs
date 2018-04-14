@@ -1,3 +1,5 @@
+'use strict';
+
 const SoatToken = artifacts.require("./SoatToken.sol");
 const helper = require("./common-functions");
 
@@ -13,7 +15,7 @@ module.exports = (callback) => {
             console.log("***********************************************************************");
             balances.forEach((balance) => console.log(`  ${balance.account}     ${web3.fromWei(balance.balance) }`))
         })  
-        .catch((msg) => console.log("Error : " + msg));
+        .catch((msg) => console.log("Error : =======================" + msg));
 
     callback();
 }
