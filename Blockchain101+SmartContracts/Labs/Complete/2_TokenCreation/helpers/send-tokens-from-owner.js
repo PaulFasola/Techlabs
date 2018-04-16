@@ -6,22 +6,23 @@ const program = require("commander");
 
 module.exports = function (callback) {
     let _instance = null;
-    let errored = false; 
+    let errored = false;
+
+    let tokenAmount = program.amount * 1000000000000000000;
 
     program
         .option('--amount [value]', 'Amount of tokens')
         .parse(process.argv);
-  
-    if(parseInt(program.amount) === NaN){
+
+    if (parseInt(program.amount) === NaN) {
         return;
     }
-
-    let tokenAmount = program.amount * 1000000000000000000;
 
     SoatToken.deployed()
         .then(
             async function (instance) {
                 _instance = instance;
+                helper.bind(instance, web3);
                 console.log("*****************************************************************************************************************")
                 console.log(" Sending FROM: " + web3.eth.accounts[0] + "    ->     TO: " + web3.eth.accounts[1])
                 console.log(" Amount : " + web3.fromWei(tokenAmount, "ether")); // 18 digits

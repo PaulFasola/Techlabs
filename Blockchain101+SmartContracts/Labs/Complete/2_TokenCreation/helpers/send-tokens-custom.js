@@ -1,16 +1,19 @@
 'use strict';
 
-var program = require("commander");
-var SoatToken = artifacts.require("./SoatToken.sol");
+const SoatToken = artifacts.require("./SoatToken.sol");
+const program = require("commander");
+const helper = require("./common-functions");
 
 module.exports = function (callback) {
-    var _instance = null;
-    var errored = false;
+    let _instance = null;
+    let errored = false;
+
+    let amountToSend = (program.amount * 1000000000000000000);
 
     program
         .option('--amount [value]', 'Amount of tokens')
-        .option('--sender [value]', 'Sender adress')
-        .option('--receiver [value]', 'Receiver adress')
+        .option('--sender [value]', 'Sender id')
+        .option('--receiver [value]', 'Receiver id')
         .parse(process.argv);
 
     if (!program.amount || !program.sender || !program.receiver) {
@@ -18,17 +21,19 @@ module.exports = function (callback) {
         return;
     }
 
-    var amountToSend = (program.amount * 1000000000000000000);
+    let senderWallet = helper.getWalletByKey(program.sender);
+    let receiverWallet = helper.getWalletByKey(program.receiver);
 
     SoatToken.deployed()
         .then(
             async function (instance) {
                 _instance = instance;
+                helper.bind(instance, web3);
                 console.log("*******************************************************************************************************************")
-                console.log(" Sending FROM: " + program.sender + "    ->     TO: " + program.receiver);
+                console.log(" Sending FROM: " + senderWallet + "    ->     TO: " + receiverWallet);
                 console.log(" Amount: " + this.web3.fromWei(amountToSend, "ether"));
                 console.log("*******************************************************************************************************************\n")
-                return instance.transfer(program.receiver, amountToSend);
+                return instance.transferFrom(senderWallet, receiverWallet, amountToSend);
             },
             async function (error) {
                 errored = true;

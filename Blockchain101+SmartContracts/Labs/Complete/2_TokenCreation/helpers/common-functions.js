@@ -12,7 +12,7 @@ var contractHelper = {
     getBalances: async () => {
         var balances = [];
 
-        if(contractHelper.web3.eth === undefined){
+        if (contractHelper.web3.eth === undefined) {
             return balances;
         }
 
@@ -30,6 +30,10 @@ var contractHelper = {
         );
 
         return balances;
+    },
+
+    getWalletByKey: (key) => {
+        return contractHelper.web3.eth.accounts[key];
     },
 
     getBalance: (instance, address) => {

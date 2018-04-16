@@ -34,18 +34,19 @@ getParamsFromPrerequisites = (prerequisites) => {
                 console.log("Invalid : the provided amount is not a number.");
             }
         } else if (prerequisite == "askForSender") {
-            var answer = rlsync.question("\nSender wallet address ?> ");
-            if (answer.length === 40 || answer.length == 42) { // 42 : with 0x
+            var answer = rlsync.question("\nSender wallet ID ?> ");
+            answer = parseInt(answer);
+            if (answer !== NaN && answer >= 0 && answer <= answer + 1) {
                 inlineParams += " --sender " + answer;
             } else {
-                console.log("Invalid : wallet address are 40 or 42 length sized.");
+                console.log("Invalid sender wallet ID.");
             }
         } else if (prerequisite == "askForReceiver") {
-            var answer = rlsync.question("\nReceiver wallet address ?> ");
-            if (answer.length === 40 || answer.length == 42) { // 42 : with 0x
+            var answer = rlsync.question("\nReceiver wallet address ID ?> ");
+            if (answer !== NaN && answer >= 0 && answer <= answer + 1) {
                 inlineParams += " --receiver " + answer;
             } else {
-                console.log("Invalid : wallet address are 40 or 42 length sized.");
+                console.log("Invalid receiver wallet ID.");
             }
         } else {
             throw "Prerequisite '" + prerequisite + "' is not implemented.";
