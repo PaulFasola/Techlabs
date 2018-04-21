@@ -4,7 +4,7 @@ const SoatToken = artifacts.require("./SoatToken.sol");
 const program = require("commander");
 const helper = require("./common-functions");
 
-module.exports = function (callback) {
+module.exports = async function (callback) {
     let _instance = null;
     let errored = false;
 
@@ -21,13 +21,22 @@ module.exports = function (callback) {
         return;
     }
 
-    let senderWallet = helper.getWalletByKey(program.sender);
-    let receiverWallet = helper.getWalletByKey(program.receiver);
+    let senderWallet = await helper.getWalletByKey(program.sender);
+    let receiverWallet = await helper.getWalletByKey(program.receiver);
+
+    if (senderWallet == null) {
+        console.log("Sender wallet not found. Wrong id provided ?");
+        return;
+    }
+
+    if (receiverWallet == null) {
+        console.log("Receiver wallet not found. Wrong id provided?");
+        return;
+    }
 
     SoatToken.deployed()
-        .then(
-            async function (instance) {
-                _instance = instance;
+        .then(async  (contractInstance) => {
+                _instance = contractInstance;  
                 helper.bind(instance, web3);
                 console.log("*******************************************************************************************************************")
                 console.log(" Sending FROM: " + senderWallet + "    ->     TO: " + receiverWallet);

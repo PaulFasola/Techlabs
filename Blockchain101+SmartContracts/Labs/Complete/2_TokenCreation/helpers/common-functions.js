@@ -4,8 +4,9 @@ var contractHelper = {
     instance: {},
     web3: {},
 
-    bind: (contractInstance, web3Hook) => {
-        contractHelper.instance = contractInstance;
+    bind: (contractInstanceHook, web3Hook) => {
+        console.log("BIND CALLED");
+        contractHelper.instance = contractInstanceHook;
         contractHelper.web3 = web3Hook;
     },
 
@@ -25,15 +26,18 @@ var contractHelper = {
                             balance: balance
                         });
                     })
-
                 })
         );
 
         return balances;
     },
 
-    getWalletByKey: (key) => {
-        return contractHelper.web3.eth.accounts[key];
+    getWalletByKey: async (key) => {
+        // TODO: /
+        var balances = await contractHelper.getBalances();
+        console.log(contractHelper);
+        // here, we just need the wallet address.
+        return balances[key] ? balances[key].account : null;
     },
 
     getBalance: (instance, address) => {
