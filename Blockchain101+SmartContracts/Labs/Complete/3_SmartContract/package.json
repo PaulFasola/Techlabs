@@ -1,49 +1,23 @@
 {
-  "name": "eth-lottery",
-  "version": "0.1.0",
-  "description": "The Ethereum Block Hash Lottery",
-  "contributors": [
-    {
-      "name": "Renato Cardoso"
-    },
-    {
-      "name": "Renato Cavallari"
-    }
-  ],
-  "main": "index.js",
+  "name": "techlab-roulette",
+  "version": "1.0.0",
+  "description": "",
   "scripts": {
-    "dev": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "preinstall": "npm install ganache-cli -g && npm install truffle -g",
+    "testrpc": "ganache-cli --account=\"0x40e16bbfe219ecaa733169b9192604338d0c55d48a3c90dae45badaede6822ff,10000000000000000000000\" --account=\"0xf5d09e61086d537581377e29c93edcf19de73b42230c7b9fe390e4dd560ffc0a,10000000000000000000000\" -g 200000000",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate --reset",
+    "console": "truffle console",
+    "serve": "truffle serve",
+    "test": "truffle test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/renasboy/ETHLottery.git"
-  },
-  "keywords": [
-    "ethereum",
-    "ether",
-    "lottery",
-    "blockchain",
-    "solidity",
-    "geth",
-    "ether",
-    "ethercoin"
-  ],
-  "author": "r2goo",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/renasboy/ETHLottery/issues"
-  },
-  "homepage": "https://github.com/renasboy/ETHLottery#readme",
-  "devDependencies": {
-    "bignumber": "^1.1.0",
-    "geth": "^0.3.0",
-    "web3": "^0.19.1"
-  },
+  "author": "Paul Fasola",
+  "license": "MIT",
   "dependencies": {
-    "bootstrap": "^4.0.0",
-    "express": "^4.16.3",
-    "fs": "0.0.1-security",
-    "jquery": "^3.3.1"
+    "bootstrap": "^4.1.0",
+    "jquery": "^3.3.1",
+    "jquerykeyframes": "^1.0.3",
+    "live-server": "^1.2.0",
+    "noty": "^3.2.0-beta"
   }
 }

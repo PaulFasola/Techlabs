@@ -1,21 +1,18 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const port = 8080;
-
-// this is bad and you don't want to see this line on prod...
-app.use(express.static(path.join(__dirname, 'node_modules')));
-app.use(express.static(path.join(__dirname, 'build')));
-app.use(express.static('public'));
-
-app.get('/', (request, response) => {
-   
-})
-
-app.listen(port, (err) => {
-  if (err) {
-    return console.log('something bad happened', err)
-  }
-
-  console.log(`server is listening on ${port}`)
-})
+var liveServer = require("live-server");
+ 
+var params = {
+    port: 8080,
+    host: "0.0.0.0",
+    root: "app/",
+    open: true,
+    file: "index.html",
+    mount: [
+                ['/artifacts', './build/contracts'],
+                ['/noty', './node_modules/noty/lib'],
+                ['/jquery', './node_modules/jquery/dist'],
+                ['/keyframes', './node_modules/jquerykeyframes/dist'],
+                ['/bootstrap', './node_modules/bootstrap/dist']
+            ],
+    logLevel: 2
+};
+liveServer.start(params);
