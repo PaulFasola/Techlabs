@@ -1,0 +1,8 @@
+Node pas à la bonne vesion sur nux'
+-----------------------------------
+sudo npm install -g npm
+sudo npm install -g n
+sudo n stable
+
+Si toujours pas bon 
+sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node
