@@ -164,6 +164,7 @@ const RouletteApp = {
     });
 
     RouletteApp.refreshBets();
+    RouletteApp.watchBalance();
   },
 
   clearOldBets: () => {
@@ -181,7 +182,7 @@ const RouletteApp = {
         date: new Date().toISOString(),
         player: RouletteApp.account,
         value: result.args.number.toNumber(),
-        wonAmount: result.args.wonAmount.toNumber()
+        wonAmount: web3.fromWei(result.args.wonAmount.toNumber(), "ether" )
       });
     }
 
@@ -224,7 +225,7 @@ const RouletteApp = {
       line += `<td>${oldBets.date}</td>`;
       line += `<td>${oldBets.player}</td>`;
       line += `<td>${oldBets.value === undefined ? "(no bet)" : oldBets.value}</td>`;
-      line += `<td>${oldBets.wonAmount} ${oldBets.wonAmount === 0 ? "(you lost)" : "(you won!)" }</td>`;
+      line += `<td>${oldBets.wonAmount} ${parseInt(oldBets.wonAmount) === 0 ? "(you lost)" : "(you won!)" }</td>`;
       line += "</tr>";
       $("#oldbets").append(line);
     });
@@ -243,9 +244,9 @@ const RouletteApp = {
             amount: web3.fromWei(parseInt(result[3].toNumber()))
           };
 
-          switch(parseInt(result[4].toNumber())){
+          switch (parseInt(result[4].toNumber())) {
             case 0:
-              bet.type = "Single"; 
+              bet.type = "Single";
               break;
             case 38:
               bet.type = "Even";
