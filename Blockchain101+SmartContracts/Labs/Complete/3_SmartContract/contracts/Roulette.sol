@@ -1,4 +1,4 @@
-pragma solidity ^0.4.2;
+pragma solidity 0.4.23;
 
 
 contract Roulette {
@@ -108,11 +108,10 @@ contract Roulette {
                     won = true;
                 }
             }
+
             if (won) {
-                won_amount = won_amount * getPayoutForType(bets[i].betType);
-                if (!bets[i].player.send(won_amount)) {
-                    revert();
-                }
+               won_amount += bets[i].value * getPayoutForType(bets[i].betType);
+               bets[i].player.transfer(won_amount);
             }
         }
 

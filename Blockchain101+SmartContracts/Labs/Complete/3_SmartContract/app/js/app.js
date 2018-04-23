@@ -159,7 +159,8 @@ const RouletteApp = {
       id: result.betId,
       player: result.player,
       type: result.type,
-      value: result.value
+      number: result.number,
+      amount: result.amount
     });
 
     RouletteApp.refreshBets();
@@ -177,7 +178,7 @@ const RouletteApp = {
     if (duplicate.length === 0) {
       RouletteApp.oldBets.unshift({
         id: result.transactionHash,
-        date: new Date(),
+        date: new Date().toISOString(),
         player: RouletteApp.account,
         value: result.args.number.toNumber(),
         wonAmount: result.args.wonAmount.toNumber()
@@ -192,17 +193,17 @@ const RouletteApp = {
     $("#bets").children().remove("tr:not('#no-bets')");
 
     if (RouletteApp.bets.length > 0) {
-      $("#no-bet").addClass("collapse");
+      $("#no-bets").addClass("collapse");
     } else {
-      $("#no-bet").removeClass("collapse");
+      $("#no-bets").removeClass("collapse");
     }
 
     RouletteApp.bets.forEach((bet) => {
       var line = "<tr>";
       line += `<td>${bet.id}</td>`;
       line += `<td>${bet.player}</td>`;
-      line += `<td>${bet.type}</td>`;
-      line += `<td>${bet.value}</td>`;
+      line += `<td>${bet.type} ${(bet.type === "Single") ? `(${bet.number})` : ''}</td>`;
+      line += `<td>${bet.amount}</td>`;
       line += "</tr>";
       $("#bets").append(line);
     });
@@ -238,8 +239,8 @@ const RouletteApp = {
           var bet = {
             betId: result[0].toNumber(),
             player: result[1],
-            type: parseInt(result[2].toNumber()),
-            value: web3.fromWei(parseInt(result[3].toNumber()))
+            number: parseInt(result[2].toNumber()),
+            amount: web3.fromWei(parseInt(result[3].toNumber()))
           };
 
           switch(parseInt(result[4].toNumber())){
@@ -304,6 +305,8 @@ const RouletteApp = {
 
 function finishSpin() {
   $("#bets").remove("tr:not('#no-bets')");
+  $("#no-bets").removeClass("collapse");
+
   $("#outcome_section").show();
   $("#spin").show();
   $("#newBet").show();
