@@ -8,8 +8,6 @@ module.exports = async function (callback) {
     let _instance = null;
     let errored = false;
 
-    let amountToSend = (program.amount * 1000000000000000000);
-
     program
         .option('--amount [value]', 'Amount of tokens')
         .option('--sender [value]', 'Sender id')
@@ -21,34 +19,42 @@ module.exports = async function (callback) {
         return;
     }
 
-    let senderWallet = await helper.getWalletByKey(program.sender);
-    let receiverWallet = await helper.getWalletByKey(program.receiver);
-
-    if (senderWallet == null) {
-        console.log("Sender wallet not found. Wrong id provided ?");
-        return;
-    }
-
-    if (receiverWallet == null) {
-        console.log("Receiver wallet not found. Wrong id provided?");
-        return;
-    }
-
+    let amountToSend = (program.amount * 1000000000000000000);
+    let senderWallet = "";
+    let receiverWallet = "";
+    
     SoatToken.deployed()
-        .then(async  (contractInstance) => {
-                _instance = contractInstance;  
-                helper.bind(instance, web3);
+        .then(async (contractInstance) => {
+                _instance = contractInstance;
+                helper.bind(_instance, web3);
+                
+                 senderWallet = await helper.getWalletByKey(program.sender);
+                 receiverWallet = await helper.getWalletByKey(program.receiver);
+
+                if (senderWallet == null) {
+                    console.log("Sender wallet not found. Wrong id provided ?");
+                    return;
+                }
+
+                if (receiverWallet == null) {
+                    console.log("Receiver wallet not found. Wrong id provided?");
+                    return;
+                }
+ 
                 console.log("*******************************************************************************************************************")
                 console.log(" Sending FROM: " + senderWallet + "    ->     TO: " + receiverWallet);
-                console.log(" Amount: " + this.web3.fromWei(amountToSend, "ether"));
+                console.log(" Amount: " + web3.fromWei(amountToSend, "ether"));
                 console.log("*******************************************************************************************************************\n")
-                return instance.transferFrom(senderWallet, receiverWallet, amountToSend);
+                return _instance.approve(receiverWallet, amountToSend, { from: senderWallet });
             },
             async function (error) {
                 errored = true;
                 console.log("Error : " + error);
             }
         )
+        .then((result) => {
+            return _instance.transferFrom(senderWallet, receiverWallet, amountToSend, { from: receiverWallet });
+        })
         .then(
             async (result) => {
                 if (result.tx !== undefined) {

@@ -3,12 +3,11 @@
 const SoatToken = artifacts.require("./SoatToken.sol");
 const readline = require('readline');
 const program = require("commander");
+const helper = require("./common-functions.js");
 
 module.exports = function (callback) {
     let _instance = null;
     let errored = false;
-
-    let tokenAmount = program.amount * 1000000000000000000;
 
     program
         .option('--amount [value]', 'Amount of tokens')
@@ -17,6 +16,8 @@ module.exports = function (callback) {
     if (parseInt(program.amount) === NaN) {
         return;
     }
+
+    let tokenAmount = program.amount * 1000000000000000000;
 
     SoatToken.deployed()
         .then(
