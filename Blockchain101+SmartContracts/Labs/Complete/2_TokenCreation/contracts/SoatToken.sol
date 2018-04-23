@@ -1,24 +1,30 @@
-pragma solidity ^0.4.18;
-import '../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol';
- 
+pragma solidity 0.4.18;
+import "../node_modules/zeppelin-solidity/contracts/math/SafeMath.sol";
+
+
 contract SoatToken {
     using SafeMath for uint;
+
     event Transfer(
         address indexed _from,
         address indexed _to,
         uint256 _value
     );
+
     event Approval(
         address indexed _owner,
         address indexed _spender,
         uint256 _value
     );
+
     string public symbol;
     string public name;
     uint8 public decimals;
     uint public totalSupply;
-    mapping(address => uint) balances;
-    mapping(address => mapping(address => uint)) allowed;
+
+    mapping(address => uint) public balances;
+
+    mapping(address => mapping(address => uint)) public allowed;
 
     /**
      * Constructs the Token contract and gives all of the supply to the address
@@ -26,18 +32,19 @@ contract SoatToken {
      *     decimal places.
      */
     function SoatToken() public {
-        symbol = 'STK';
-        name = 'SoatToken';
+        symbol = "STK";
+        name = "SoatToken";
         decimals = 18;
-        totalSupply = 13370000 * 10** uint(decimals);
+        totalSupply = 13370000 * 10 ** uint(decimals);
         balances[msg.sender] = totalSupply;
         Transfer(address(0), msg.sender, totalSupply);
     }
+
     /**
      * @dev Fallback function
      */
     function() public payable { revert(); }
-    
+
     /**
      * Gets the token balance of any wallet.
      * @param _owner Wallet address of the returned token balance.
@@ -50,8 +57,10 @@ contract SoatToken {
     {
         return balances[_owner];
     }
+
     /**
      * Transfers tokens from the sender's wallet to the specified `_to` wallet.
+     * Without allowancy checks, this is SUPER UNSAFE. So DO NOT PROD.
      * @param _to Address of the transfer's recipient.
      * @param _value Number of tokens to transfer.
      * @return True if the transfer succeeded.
@@ -62,6 +71,7 @@ contract SoatToken {
         Transfer(msg.sender, _to, _value);
         return true;
     }
+
     /**
      * Transfer tokens from any wallet to the `_to` wallet. This only works if
      *     the `_from` wallet has already allocated tokens for the caller wallet
@@ -82,6 +92,7 @@ contract SoatToken {
         Transfer(_from, _to, _value);
         return true;
     }
+
     /**
      * Sender allows another wallet to `transferFrom` tokens from their wallet.
      * @param _spender Address of `transferFrom` recipient.
@@ -96,6 +107,7 @@ contract SoatToken {
         Approval(msg.sender, _spender, _value);
         return true;
     }
+
     /**
      * Gets the number of tokens that an `_owner` has approved for a _spender
      *     to `transferFrom`.
