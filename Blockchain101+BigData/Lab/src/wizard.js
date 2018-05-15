@@ -34,6 +34,8 @@ if (typeof stdin.setRawMode === 'function') {
 
 function clearConsole() {
     process.stdout.write(process.platform === 'win32' ? '\x1Bc' : '\x1B[2J\x1B[3J\x1B[H');
+    process.stdout.clearLine();  // clear current text
+    process.stdout.cursorTo(0); 
 }
 
 const cleanup = () => {
@@ -103,6 +105,8 @@ function lookup(type) {
                 return;
             }
 
+            answer = answer.slice(0, -1);
+
             console.log("Please wait, looking for '" + answer + "' (can take a minute)")
             var child = exec('node ./src/search.bymeta --search ' + answer + " --type " + type);
             child.stdout.on('data', function (data) {
@@ -162,14 +166,15 @@ async function handleKeypress(key) {
 
         case 't':
             {
-                clearConsole();
                 stopWaitingForCommand();
-                console.log("Transaction ?");
+                clearConsole();
+                console.log("Transaction ?"); 
                 rl.question('> ', tx => {
                     if (!tx) {
                         return;
                     } else {
-                        open('https://test.bigchaindb.com/api/v1/transactions/' + tx);
+                        open('https://test.bigchaindb.com/api/v1/transactions/' + tx.slice(0, -1));
+                        rl.close();
                     }
                     cleanup();
                 });
@@ -178,7 +183,7 @@ async function handleKeypress(key) {
 
         case 'g':
             {
-                open('https://github.com/PaulFasola/TechLabBlockchain101/tree/master/BigData');
+                open('https://github.com/PaulFasola/TechLabBlockchain101/tree/master/Blockchain101%2BBigData');
                 return;
             }
     }

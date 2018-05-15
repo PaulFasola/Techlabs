@@ -4,16 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/wizard"
+    "start": "node ./src/wizard.js",
+    "dev": "node ./src/training.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bigchaindb-driver": "^4.0.0",
+    "chalk": "^2.4.1",
     "faker": "^4.1.0",
-    "lorem-ipsum": "^1.0.4",
     "open": "0.0.5",
-    "sleep": "^5.1.1",
     "uuid": "^3.2.1"
   }
 }
